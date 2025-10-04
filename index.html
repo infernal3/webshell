@@ -1,0 +1,105 @@
+<html><head><script defer>
+var saved=void 0;const el=e=>document.getElementById(e),
+out=e=>{el("stdout").innerHTML+="<br>"+e;
+},Clear=function(){
+    el("stdout").innerHTML="Command output was cleared";
+},Help=function(A){
+    if(!A[0]){
+        out("Help Menu");
+        for(const prop in C){
+           out(`${prop} - ${C[prop].lore}`);
+        }
+    }else{
+        out("Help Menu");
+        out(`${A[0]} - ${(C[A[0]]??{lore:'<span style="color:#ff0000">Unrecognized command.</span>'}).lore}`);
+        out("");
+        for(const prop of (C[A[0]]??{extend:[]}).extend){
+            out(prop);
+        }
+    }
+},Time=function(){
+    out(""+Date());
+},Get=function(A){
+    out(localStorage.getItem(A[0])??'<span style="color:#ff0000">No data found.</span>');
+},Write=function(A){
+    if(A.length<2){
+        out('<span style="color:#ff0000">Missing one or more inputs.</span>');
+        return;
+    }
+    var temp=A[0];
+    A.shift();
+    localStorage.setItem(temp,A.join("\u0020"));
+    out("Wrote data to local storage.");
+},List=function(){
+    out(`local storage keys (total ${localStorage.length})`)
+    for(var i=0;i<localStorage.length;i++){
+        out(localStorage.key(i));
+    }
+},Delete=function(A){
+    if(A.length<1){out('<span style="color:#ff0000">Missing one or more inputs.</span>');return;}
+    localStorage.removeItem(A[0]);
+    out("Removed data from local storage.");
+},Copy=function(A){
+    if(A.length<2){out('<span style="color:#ff0000">Missing one or more inputs.</span>');return;}
+    var temp=localStorage.getItem(A[0])??"";
+    localStorage.setItem(A[1],temp);
+    out("Copied data.");
+},Alert=function(A){
+    if(A.length<1){out('<span style="color:#ff0000">Missing one or more inputs.</span>');return;}
+    alert(A[0]);
+},Quit=function(){
+    window.location.href="https://infernal3.github.io/#quit";
+},Secret=function(A){
+    out("Welcome to the secret interface.");
+    out(`Your code was <span style="color:#ffff00">${A[0]}</span>. INCORRECT CODE.`)
+},C={
+    alert:{
+        name:"alert",ref:Alert,lore:"Show an alert.",extend:["alert &lt;message&gt;","message - The message to send in the alert."]
+    },clear:{
+        name:"clear",ref:Clear,lore:"Clear all command output.",extend:["clear","No arguments"]
+    },copy:{
+        name:"copy",ref:Copy,lore:"Copy one item in the local storage to another.",extend:["copy &lt;fromKey&gt; &lt;toKey&gt;","fromKey - The key to copy data from.","toKey - The key to copy data to."]
+    },delete:{
+        name:"delete",ref:Delete,lore:"Delete a key from the local storage.",extend:["delete &lt;key&gt;","key - The key to delete."]
+    },get:{
+        name:"get",ref:Get,lore:"Get an item from the local storage.",extend:["get &lt;key&gt;","key - The key to get data from."]
+    },help:{
+        name:"help",ref:Help,lore:"Display a help menu.",extend:["help &lt;command&gt;?","command - If present, specifies help for the specific command."]
+    },list:{
+        name:"list",ref:List,lore:"List all keys in the local storage.",extend:["list","No arguments"]
+    },secret:{
+        name:"secret",ref:Secret,lore:"???",extend:["secret &lt;code&gt;?","code - ???"]
+    },time:{
+        name:"time",ref:Time,lore:"Display the current time and date.",extend:["time","No arguments"]
+    },quit:{
+        name:"quit",ref:Quit,lore:"Exit Webshell.",extend:["quit","No argments"]
+    },write:{
+        name:"write",ref:Write,lore:"Write an item to the local storage.",extend:["write &lt;key&gt; &lt;value...&gt;","key - The key to write data to.","value - The data to write."]
+    }
+}
+,KeydownHandler=function(e){
+    if(!e.repeat&&(e.key=="Enter"||e.key=="Return")){
+        Send();return;
+    }if(!e.repeat&&e.key=="ArrowUp"){el("stdin").value=saved??"";return;}
+},Send=function(){
+    var input=el("stdin").value;
+    el("stdin").value="";
+    out(">"+input);
+    Command(input);
+},Command=function(e){
+    console.log(e);
+    saved=e;
+    var H=e.split("\u0020");
+    for(const prop in C){
+        if(H[0]==prop){
+            H.shift();
+            C[prop].ref(H);
+            return;
+        }
+    }
+    out('<span style="color:#ff0000">Unrecognized command.</span>');
+};
+window.addEventListener("load",()=>{
+    el("stdin").addEventListener("keydown",KeydownHandler);
+});
+</script><style>:root{background:#001618;}body{margin:0px;border:0px;padding:0px;}#stdin::before{content:"\u003E\u0020";display:inline;}#stdin{background:#001618;width:100%;z-index:4;font-family:monospace;font-size:11px;color:#fcfef6;border:#000000 solid 4px;bottom:0px;left:0px;position:absolute;}#stdout{font-family:monospace;font-size:11px;color:#fcfef6;left:0px;position:absolute;bottom:30px;}</style></head><body><div style="height:100%;"><input type=text placeholder='Enter a command or type "help" for help' id=stdin></div><div id=stdout></div></div></body></html>
