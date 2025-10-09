@@ -111,7 +111,7 @@ out=e=>{el("stdout").innerHTML+="<br>"+e;
 };
 window.addEventListener("load",()=>{
     el("stdin").addEventListener("keydown",KeydownHandler);
-    if(!localStorage.getItem("startup-config")){localStorage.setItem("startup-config",`clear;out;out;out;out;out Welcome to Webshell.;out Currently running the <span style="color:#00ff00">default</span> startup configuration.;out If you didn't mean to open this, type "quit" in the box below.;out Or, you may enter a command or expression.`)}
+    if(!localStorage.getItem("startup-config")){localStorage.setItem("startup-config",`clear;out;out;out;out;out Welcome to Webshell.;out Currently running the <span style="color:#00ff00">default</span> startup configuration.;out If you didn't mean to open this, type "quit" in the box below.;out Enter a command or expression to get started.`)}
     Command("run startup-config");
 });
 </script><style>:root{background:#001618;}body{margin:0px;border:0px;padding:0px;}#stdin::before{content:"\u003E\u0020";display:inline;}#stdin{background:#001618;width:100%;z-index:4;font-family:monospace;font-size:11px;color:#fcfef6;border:#000000 solid 4px;bottom:0px;left:0px;position:absolute;}#stdout{font-family:monospace;font-size:11px;color:#fcfef6;left:5px;position:absolute;bottom:30px;}</style></head><body><div style="height:100%;"><input type=text placeholder='Enter a command or type "help" for help' id=stdin></div><div id=stdout></div></div></body></html>
