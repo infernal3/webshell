@@ -5,13 +5,14 @@ out=e=>{el("stdout").innerHTML+="<br>"+e;
     el("stdout").innerHTML="Command output was cleared";
 },Help=function(A){
     if(!A[0]){
-        out("Help Menu");
+        out(`<br>Help Menu - List of Commands (total ${Object.keys(C).length})<br>`);
         for(const prop in C){
            out(`${prop} - ${C[prop].lore}`);
         }
+        out('<br>For more information, run "help help" to learn more about this command.')
     }else{
-        out("Help Menu");
-        out(`${A[0]} - ${(C[A[0]]??{lore:'<span style="color:#ff0000">Unrecognized command.</span>'}).lore}`);
+        out("Help Menu - Specific Command Help");
+        out(`<strong>${A[0]}</strong> - ${(C[A[0]]??{lore:'<span style="color:#ff0000">Unrecognized command.</span>'}).lore}`);
         out("");
         for(const prop of (C[A[0]]??{extend:[]}).extend){
             out(prop);
@@ -46,30 +47,39 @@ out=e=>{el("stdout").innerHTML+="<br>"+e;
     out("Copied data.");
 },Alert=function(A){
     if(A.length<1){out('<span style="color:#ff0000">Missing one or more inputs.</span>');return;}
-    alert(A[0]);
+    alert(A.join(" "));
 },Quit=function(){
     window.location.href="https://infernal3.github.io/#quit";
 },Secret=function(A){
     out("Welcome to the secret interface.");
     out(`Your code was <span style="color:#ffff00">${A[0]}</span>. INCORRECT CODE.`)
-},C={
+},Eval=function(A){
+    var H=A.join(" ").split(";");
+    H.forEach(e=>{Command(e)});
+    out(`Evaluated ${H.length} command(s).`);
+    saved="eval "+A.join(" ");
+},Run=function(A){
+    if(A.length<1){out('<span style="color:#ff0000">Missing one or more inputs.</span>');return;}
+    Command("eval "+(localStorage.getItem(A[0])??""));
+    saved="";
+},Out=function(A){out(A.join(" "))},C={
     alert:{
-        name:"alert",ref:Alert,lore:"Show an alert.",extend:["alert &lt;message&gt;","message - The message to send in the alert."]
+        name:"alert",ref:Alert,lore:"Show an alert.",extend:["alert &lt;message...&gt;","message - The message to send in the alert."]
     },clear:{
         name:"clear",ref:Clear,lore:"Clear all command output.",extend:["clear","No arguments"]
     },copy:{
         name:"copy",ref:Copy,lore:"Copy one item in the local storage to another.",extend:["copy &lt;fromKey&gt; &lt;toKey&gt;","fromKey - The key to copy data from.","toKey - The key to copy data to."]
     },delete:{
         name:"delete",ref:Delete,lore:"Delete a key from the local storage.",extend:["delete &lt;key&gt;","key - The key to delete."]
-    },get:{
+    },eval:{name:"eval",ref:Eval,lore:"Evaluate one or more expressions, separated by semicolons (;).",extend:["eval &lt;expr...&gt;","expr - Expressions to evaluate.","","EXAMPLE USAGE","eval write file Example Text;copy file register;time"]},get:{
         name:"get",ref:Get,lore:"Get an item from the local storage.",extend:["get &lt;key&gt;","key - The key to get data from."]
     },help:{
         name:"help",ref:Help,lore:"Display a help menu.",extend:["help &lt;command&gt;?","command - If present, specifies help for the specific command."]
     },list:{
         name:"list",ref:List,lore:"List all keys in the local storage.",extend:["list","No arguments"]
-    },secret:{
+    },out:{name:"out",ref:Out,lore:"Output any input provided.",extend:["out &lt;string...&gt;","string - The string to output."]},secret:{
         name:"secret",ref:Secret,lore:"???",extend:["secret &lt;code&gt;?","code - ???"]
-    },time:{
+    },run:{name:"run",ref:Run,lore:"Evaluate the text of an item in the local storage.",extend:["run &lt;key&gt;","key - The key to evaluate the contents of.","","WARNING","This function will call <strong>eval</strong>.","Please be mindful of running this on unknown files."]},time:{
         name:"time",ref:Time,lore:"Display the current time and date.",extend:["time","No arguments"]
     },quit:{
         name:"quit",ref:Quit,lore:"Exit Webshell.",extend:["quit","No argments"]
@@ -101,5 +111,9 @@ out=e=>{el("stdout").innerHTML+="<br>"+e;
 };
 window.addEventListener("load",()=>{
     el("stdin").addEventListener("keydown",KeydownHandler);
+    if(!localStorage.getItem("startup-config")){localStorage.setItem("startup-config",`clear;out;out;out;out;out Welcome to Webshell.;out Currently running the <span style="color:#00ff00">default</span> startup configuration.;out If you didn't mean to open this, type "quit" in the box below.;out Enter a command or expression to get started.`)}
+    Command("run startup-config");
 });
-</script><style>:root{background:#001618;}body{margin:0px;border:0px;padding:0px;}#stdin::before{content:"\u003E\u0020";display:inline;}#stdin{background:#001618;width:100%;z-index:4;font-family:monospace;font-size:11px;color:#fcfef6;border:#000000 solid 4px;bottom:0px;left:0px;position:absolute;}#stdout{font-family:monospace;font-size:11px;color:#fcfef6;left:0px;position:absolute;bottom:30px;}</style></head><body><div style="height:100%;"><input type=text placeholder='Enter a command or type "help" for help' id=stdin></div><div id=stdout>Welcome to infernal3's Webshell.<br>Enter a command or expression to get started.<br><br>If you didn't mean to open this, type "quit" below or close this tab.<br><br></div></div></body></html>
+</script><style>:root{background:#001618;}body{margin:0px;border:0px;padding:0px;}#stdin::before{content:"\u003E\u0020";display:inline;}#stdin{background:#001618;width:100%;z-index:4;font-family:monospace;font-size:11px;color:#fcfef6;border:#000000 solid 4px;bottom:0px;left:0px;position:absolute;}#stdout{font-family:monospace;font-size:11px;color:#fcfef6;left:5px;position:absolute;bottom:30px;}</style></head><body><div style="height:100%;"><input type=text placeholder='Enter a command or type "help" for help' id=stdin></div><div id=stdout></div></div></body></html>
+
+
