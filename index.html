@@ -62,11 +62,16 @@ out=e=>{el("stdout").innerHTML+="<br>"+e;
     if(A.length<1){out('<span style="color:#ff0000">Missing one or more inputs.</span>');return;}
     Command("eval "+(localStorage.getItem(A[0])??""));
     saved="";
-},Out=function(A){out(A.join(" "))},C={
+},Out=function(A){out(A.join(" "))
+},Clip=function(){
+    navigator.clipboard.writeText(el("stdout").lastChild.textContent??"");
+},C={
     alert:{
         name:"alert",ref:Alert,lore:"Show an alert.",extend:["alert &lt;message...&gt;","message - The message to send in the alert."]
     },clear:{
         name:"clear",ref:Clear,lore:"Clear all command output.",extend:["clear","No arguments"]
+    },clip:{
+        name:"clip",ref:Clip,lore:"Copy the last command output to your clipboard, if it exists.",extend:["clip","No arguments"]
     },copy:{
         name:"copy",ref:Copy,lore:"Copy one item in the local storage to another.",extend:["copy &lt;fromKey&gt; &lt;toKey&gt;","fromKey - The key to copy data from.","toKey - The key to copy data to."]
     },delete:{
