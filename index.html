@@ -64,7 +64,7 @@ out=e=>{el("stdout").innerHTML+="<br>"+e;
     saved="";
 },Out=function(A){out(A.join(" "))
 },Clip=function(){
-    navigator.clipboard.writeText(el("stdout").lastChild.previousSibling.textContent ?? "");
+    navigator.clipboard.writeText(el("stdout").lastChild.previousElementSibling.previousSibling.textContent ?? "");
 },C={
     alert:{
         name:"alert",ref:Alert,lore:"Show an alert.",extend:["alert &lt;message...&gt;","message - The message to send in the alert."]
